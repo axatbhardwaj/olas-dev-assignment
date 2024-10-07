@@ -40,14 +40,10 @@ if __name__ == "__main__":
     agent2.OutBox = agent1.InBox
 
     # Run the agents in separate threads for concurrency
-    import threading
-    threading.Thread(target=agent1.run, daemon=True).start()
-    threading.Thread(target=agent2.run, daemon=True).start()
+    thread1 = threading.Thread(target=agent1.run)
+    thread2 = threading.Thread(target=agent2.run)
+    thread1.start()
+    thread2.start()
 
-    # Link agent1's OutBox to agent2's InBox and vice versa
-    agent1.OutBox = agent2.InBox
-    agent2.OutBox = agent1.InBox
-
-    # Run the agents using threads for concurrency
-    threading.Thread(target=agent1.run).start()
-    threading.Thread(target=agent2.run).start()
+    thread1.join()
+    thread2.join()

@@ -1,11 +1,15 @@
 import logging
+import time
 from typing import Callable, List, Any
 from queue import Queue
 import uuid
+import threading
+import concurrent.futures
 
 # Configure logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 class Agent:
@@ -22,7 +26,8 @@ class Agent:
 
     def register_handler(self, message_type: str, handler_function: Callable):
         self.handlers[message_type] = lambda message: handler_function(
-            message, self.private_key)
+            message, self.private_key
+        )
         logging.info(f"Handler registered for message type: {message_type}")
 
     def register_behavior(self, behavior_function: Callable):
@@ -31,23 +36,28 @@ class Agent:
 
     def process_message(self, message: Any):
         # Check if the message was not sent by this agent
-        if message['sender'] != self.id:
-            logging.info(f"Processing message of type: {
-                         type(message['content']).__name__}")
-            if "hello" in message['content']:
-                self.handlers["hello"](message['content'])
-            elif "crypto" in message['content']:
-                self.handlers["crypto"](message['content'])
+        if message["sender"] != self.id:
+            logging.info(
+                f"Processing message of type: {
+                    type(message['content']).__name__}"
+            )
+            if "hello" in message["content"]:
+                self.handlers["hello"](message["content"])
+            elif "crypto" in message["content"]:
+                self.handlers["crypto"](message["content"])
         else:
             logging.info("Ignoring message sent by self.")
 
     def run(self):
         logging.info("Agent started running")
-        while True:
-            if not self.InBox.empty():
-                message = self.InBox.get()
-                logging.info("Message retrieved from InBox")
-                self.process_message(message)
-            for behavior in self.behaviors:
-                behavior(self)
-                logging.info("Behavior executed")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            while True:
+                if not self.InBox.empty():
+                    message = self.InBox.get()
+                    logging.info("Message retrieved from InBox")
+                    if message["sender"] != self.id:
+                        self.process_message(message)
+                for behavior in self.behaviors:
+                    executor.submit(behavior, self)
+                logging.info("Behaviors executed")
+                time.sleep(2)

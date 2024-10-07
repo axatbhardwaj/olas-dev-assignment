@@ -7,17 +7,18 @@ from my_eth_utils import (
     get_web3_provider,
     get_erc20_contract,
     check_balance,
-    transfer_tokens
+    transfer_tokens,
 )
 
 # Configure logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 load_dotenv()
 
 # Load the ABI from the JSON file
-with open('abi.json', 'r') as abi_file:
+with open("abi.json", "r") as abi_file:
     contract_abi = json.load(abi_file)
 
 tenderly_fork_url = os.getenv("rpc_url")
@@ -43,8 +44,7 @@ def handle_crypto_message(message: str, private_key: str):
     balance = check_balance(w3, contract, source_address)
 
     if balance > 0:
-        transfer_tokens(w3, contract, source_address,
-                        target_address, 1, private_key)
+        transfer_tokens(w3, contract, source_address, target_address, 1, private_key)
         logging.info("1 token transferred successfully!")
     else:
         logging.warning("Insufficient balance to transfer tokens.")
