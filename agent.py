@@ -1,6 +1,7 @@
 import logging
 from typing import Callable, List, Any
 from queue import Queue
+import uuid
 
 # Configure logging
 logging.basicConfig(level=logging.INFO,
@@ -8,16 +9,20 @@ logging.basicConfig(level=logging.INFO,
 
 
 class Agent:
+
     def __init__(self, private_key: str):
+        self.id = uuid.uuid4()  # Unique ID for the agent
         self.InBox: Queue = Queue()
         self.OutBox: Queue = Queue()
         self.handlers: dict = {}
         self.behaviors: List[Callable] = []
         self.private_key = private_key
+        self.sent_message_ids = set()  # To store IDs of sent messages
         logging.info("Agent initialized")
 
     def register_handler(self, message_type: str, handler_function: Callable):
-        self.handlers[message_type] = handler_function
+        self.handlers[message_type] = lambda message: handler_function(
+            message, self.private_key)
         logging.info(f"Handler registered for message type: {message_type}")
 
     def register_behavior(self, behavior_function: Callable):
@@ -25,19 +30,16 @@ class Agent:
         logging.info("Behavior registered")
 
     def process_message(self, message: Any):
-        message_type = type(message).__name__
-        logging.info(f"Processing message of type: {message_type}")
-        if message_type in self.handlers:
-            handler = self.handlers[message_type]
-            logging.info(f"Invoking handler for message type: {message_type}")
-            if handler.__code__.co_argcount == 1:
-                handler(message)
-            else:
-                handler(message, self.private_key)
-            logging.info(f"Handler executed for message type: {message_type}")
+        # Check if the message was not sent by this agent
+        if message['sender'] != self.id:
+            logging.info(f"Processing message of type: {
+                         type(message['content']).__name__}")
+            if "hello" in message['content']:
+                self.handlers["hello"](message['content'])
+            elif "crypto" in message['content']:
+                self.handlers["crypto"](message['content'])
         else:
-            logging.warning(
-                f"No handler found for message type: {message_type}")
+            logging.info("Ignoring message sent by self.")
 
     def run(self):
         logging.info("Agent started running")

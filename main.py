@@ -20,15 +20,29 @@ if __name__ == "__main__":
     agent1 = Agent(private_key=private_key_1)
     agent2 = Agent(private_key=private_key_2)
 
-    agent1.register_handler("str", handle_hello_message)
-    agent1.register_handler("str", handle_crypto_message)
+    # Correctly register handlers with "hello" and "crypto" keys
+    # Changed from "str" to "hello"
+    agent1.register_handler("hello", handle_hello_message)
+    # Changed from "str" to "crypto"
+    agent1.register_handler("crypto", handle_crypto_message)
     agent1.register_behavior(generate_random_message)
     agent1.register_behavior(check_erc20_balance)
 
-    agent2.register_handler("str", handle_hello_message)
-    agent2.register_handler("str", handle_crypto_message)
+    # Changed from "str" to "hello"
+    agent2.register_handler("hello", handle_hello_message)
+    # Changed from "str" to "crypto"
+    agent2.register_handler("crypto", handle_crypto_message)
     agent2.register_behavior(generate_random_message)
     agent2.register_behavior(check_erc20_balance)
+
+    # Link agent1's OutBox to agent2's InBox and vice versa
+    agent1.OutBox = agent2.InBox
+    agent2.OutBox = agent1.InBox
+
+    # Run the agents in separate threads for concurrency
+    import threading
+    threading.Thread(target=agent1.run, daemon=True).start()
+    threading.Thread(target=agent2.run, daemon=True).start()
 
     # Link agent1's OutBox to agent2's InBox and vice versa
     agent1.OutBox = agent2.InBox

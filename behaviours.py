@@ -35,7 +35,11 @@ def generate_random_message(agent):
         "universe",
         "human",
     ]
-    message = f"{random.choice(words)} {random.choice(words)}"
+    message_content = f"{random.choice(words)} {random.choice(words)}"
+    message = {
+        "sender": agent.id,
+        "content": message_content
+    }
     logging.info(f"Generated message: {message}")
     agent.OutBox.put(message)
     logging.info("Message put in OutBox")

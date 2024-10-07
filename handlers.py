@@ -24,7 +24,7 @@ tenderly_fork_url = os.getenv("rpc_url")
 logging.info(f"Tenderly fork URL: {tenderly_fork_url}")
 
 
-def handle_hello_message(message: str):
+def handle_hello_message(message: str, private_key: str):
     logging.info(f"Received 'hello' message: {message}")
 
 
