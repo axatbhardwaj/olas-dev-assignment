@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 def get_web3_provider(tenderly_fork_url: str) -> Web3:
@@ -44,7 +45,9 @@ def check_balance(w3: Web3, contract, address: str) -> int:
         raise
 
 
-def transfer_tokens(w3, contract, source_address, destination_address, amount, private_key):
+def transfer_tokens(
+    w3, contract, source_address, destination_address, amount, private_key
+):
     # Log the private key retrieval
     logging.info("Retrieving private key for signing the transaction.")
 
@@ -53,20 +56,25 @@ def transfer_tokens(w3, contract, source_address, destination_address, amount, p
         logging.error("Private key is None. Cannot sign the transaction.")
         raise ValueError("Private key cannot be None.")
 
+    # Get the number of decimals for the token
+    decimals = contract.functions.decimals().call()
+    amount_with_decimals = amount * 10**decimals
+
     # Retrieve the current nonce for the source address
     nonce = w3.eth.get_transaction_count(source_address)
     logging.info(f"Retrieved nonce for {source_address}: {nonce}")
 
     # Prepare the transaction for transferring tokens from the contract
     transaction = contract.functions.transfer(
-        destination_address,
-        amount
-    ).build_transaction({
-        'gas': 2000000,
-        'gasPrice': w3.to_wei('50', 'gwei'),
-        'nonce': nonce,
-        'chainId': 1
-    })
+        destination_address, amount_with_decimals  # Use amount with decimals
+    ).build_transaction(
+        {
+            "gas": 2000000,
+            "gasPrice": w3.to_wei("50", "gwei"),
+            "nonce": nonce,
+            "chainId": 1,
+        }
+    )
 
     try:
         # Sign the transaction
@@ -75,22 +83,28 @@ def transfer_tokens(w3, contract, source_address, destination_address, amount, p
 
         # Send the transaction
         tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
-        logging.info(f"Transaction sent successfully. TX Hash: {
-                     tx_hash.hex()}")
+        logging.info(
+            f"Transaction sent successfully. TX Hash: {
+                tx_hash.hex()}"
+        )
         return tx_hash
     except ValueError as e:
         logging.error(f"Error sending transaction: {e}")
-        if 'nonce too low' in str(e):
+        if "nonce too low" in str(e):
             # Retry with the correct nonce
             nonce = w3.eth.get_transaction_count(source_address)
-            logging.info(f"Retrying with updated nonce for {
-                         source_address}: {nonce}")
-            transaction['nonce'] = nonce
+            logging.info(
+                f"Retrying with updated nonce for {
+                    source_address}: {nonce}"
+            )
+            transaction["nonce"] = nonce
             signed_tx = w3.eth.account.sign_transaction(
                 transaction, private_key)
             tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
-            logging.info(f"Transaction sent successfully on retry. TX Hash: {
-                         tx_hash.hex()}")
+            logging.info(
+                f"Transaction sent successfully on retry. TX Hash: {
+                    tx_hash.hex()}"
+            )
             return tx_hash
         else:
             raise
