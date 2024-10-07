@@ -55,8 +55,7 @@ class Agent:
                 if not self.InBox.empty():
                     message = self.InBox.get()
                     logging.info("Message retrieved from InBox")
-                    if message["sender"] != self.id:
-                        self.process_message(message)
+                    self.process_message(message)
                 for behavior in self.behaviors:
                     executor.submit(behavior, self)
                 logging.info("Behaviors executed")
