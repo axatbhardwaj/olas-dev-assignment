@@ -51,6 +51,8 @@ The project follows a modular design:
 
 ## Notes
 
+- We are using the USDT token contract address for the ERC-20 token contract in the Tenderly fork.
+- We are using a throwaway address as receiver for the token transfer.
 - This implementation uses `web3.py` for Ethereum interaction.
 - Private keys and RPC URLs are retrieved from environment variables for security.
 - The project includes unit and integration tests to ensure functionality.
