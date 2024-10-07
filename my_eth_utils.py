@@ -85,7 +85,7 @@ def transfer_tokens(
         tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
         logging.info(
             f"Transaction sent successfully. TX Hash: {
-                     tx_hash.hex()}"
+                tx_hash.hex()}"
         )
         return tx_hash
     except ValueError as e:
@@ -95,14 +95,15 @@ def transfer_tokens(
             nonce = w3.eth.get_transaction_count(source_address)
             logging.info(
                 f"Retrying with updated nonce for {
-                         source_address}: {nonce}"
+                    source_address}: {nonce}"
             )
             transaction["nonce"] = nonce
-            signed_tx = w3.eth.account.sign_transaction(transaction, private_key)
+            signed_tx = w3.eth.account.sign_transaction(
+                transaction, private_key)
             tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
             logging.info(
                 f"Transaction sent successfully on retry. TX Hash: {
-                         tx_hash.hex()}"
+                    tx_hash.hex()}"
             )
             return tx_hash
         else:

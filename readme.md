@@ -46,15 +46,15 @@ The project follows a modular design:
 
 ## Testing
 
-- Unit tests: `python -m unittest discover -s tests -p "unit_tests.py"`
-- Integration tests: `python -m unittest discover -s tests -p intergration_tests.py`
+- Unit tests: `python -m unittest tests/test_agent.py`
+- Integration tests: `python -m unittest tests/test_integration.py`
 
 ## Notes
 
-- We are using the USDT token contract address for the ERC-20 token contract in the Tenderly fork.
-- We are using a throwaway address as receiver for the token transfer.
 - This implementation uses `web3.py` for Ethereum interaction.
 - Private keys and RPC URLs are retrieved from environment variables for security.
 - The project includes unit and integration tests to ensure functionality.
 - Logging is implemented to track events and agent state.
 - Error handling is included to improve robustness.
+- The `check_erc20_balance` behavior runs in a separate thread to ensure it's executed every 10 seconds.
+- The program can exit gracefully with Ctrl+C, allowing threads to finish their tasks.

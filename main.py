@@ -36,19 +36,14 @@ if __name__ == "__main__":
     agent2 = Agent(private_key=private_key_2, message_queue=message_queue)
 
     # Correctly register handlers with "hello" and "crypto" keys
-    # Changed from "str" to "hello"
     agent1.register_handler("hello", handle_hello_message)
-    # Changed from "str" to "crypto"
     agent1.register_handler("crypto", handle_crypto_message)
     agent1.register_behavior(generate_random_message)
 
-    # Changed from "str" to "hello"
     agent2.register_handler("hello", handle_hello_message)
-    # Changed from "str" to "crypto"
     agent2.register_handler("crypto", handle_crypto_message)
     agent2.register_behavior(generate_random_message)
 
-    # Link agent1's OutBox to agent2's InBox and vice versa
     agent1.OutBox = agent2.InBox
     agent2.OutBox = agent1.InBox
 
