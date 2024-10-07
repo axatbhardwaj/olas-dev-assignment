@@ -3,7 +3,6 @@ import time
 from typing import Callable, List, Any
 from queue import Queue
 import uuid
-import threading
 import concurrent.futures
 
 # Configure logging

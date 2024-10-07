@@ -44,10 +44,12 @@ def handle_crypto_message(message: str, private_key: str):
 
     target_address = os.getenv("reciver_address")
 
-    balance = check_balance(w3, contract, source_address)
+    # balance = check_balance(w3, contract, source_address)
+    balance = balance = contract.functions.balanceOf(source_address).call()
 
     if balance > 0:
-        transfer_tokens(w3, contract, source_address, target_address, 1, private_key)
+        transfer_tokens(w3, contract, source_address,
+                        target_address, 1, private_key)
         logging.info("1 token transferred successfully!")
     else:
         logging.warning("Insufficient balance to transfer tokens.")

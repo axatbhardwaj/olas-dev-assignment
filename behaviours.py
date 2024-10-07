@@ -46,13 +46,14 @@ def generate_random_message(agent):
 
 
 def check_erc20_balance(agent):
-    # Implement the behavior to check ERC-20 token balance
-    w3 = get_web3_provider(tenderly_fork_url)
-    contract_address = os.getenv("contract_address")
-    contract = get_erc20_contract(w3, contract_abi, contract_address)
-    # Ensure the address is in the correct format
-    account = Account.from_key(agent.private_key)
-    address = account.address
-    balance = check_balance(w3, contract, address)
-    logging.info(f"ERC-20 token balance for address {address}: {balance}")
-    time.sleep(10)
+    while True:  # Added loop
+        # Implement the behavior to check ERC-20 token balance
+        w3 = get_web3_provider(tenderly_fork_url)
+        contract_address = os.getenv("contract_address")
+        contract = get_erc20_contract(w3, contract_abi, contract_address)
+        # Ensure the address is in the correct format
+        account = Account.from_key(agent.private_key)
+        address = account.address
+        balance = check_balance(w3, contract, address)
+        logging.info(f"ERC-20 token balance for address {address}: {balance}")
+        time.sleep(10)

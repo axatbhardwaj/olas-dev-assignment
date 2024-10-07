@@ -6,8 +6,19 @@ import dotenv
 import os
 import logging
 from queue import Queue
+import time
+import signal
 
 dotenv.load_dotenv()
+
+# Global flag to indicate if the program should exit
+exit_flag = False
+
+
+def signal_handler(signum, frame):
+    global exit_flag
+    exit_flag = True
+
 
 if __name__ == "__main__":
     # Initialize agents with private keys from environment variables
@@ -30,14 +41,12 @@ if __name__ == "__main__":
     # Changed from "str" to "crypto"
     agent1.register_handler("crypto", handle_crypto_message)
     agent1.register_behavior(generate_random_message)
-    agent1.register_behavior(check_erc20_balance)
 
     # Changed from "str" to "hello"
     agent2.register_handler("hello", handle_hello_message)
     # Changed from "str" to "crypto"
     agent2.register_handler("crypto", handle_crypto_message)
     agent2.register_behavior(generate_random_message)
-    agent2.register_behavior(check_erc20_balance)
 
     # Link agent1's OutBox to agent2's InBox and vice versa
     agent1.OutBox = agent2.InBox
@@ -51,7 +60,7 @@ if __name__ == "__main__":
 
     # Function to display messages from the queue in stdout
     def display_messages():
-        while True:
+        while not exit_flag:  # Check for exit flag
             message = message_queue.get()
             print(f"Received message: {message}")
 
@@ -59,6 +68,30 @@ if __name__ == "__main__":
     display_thread = threading.Thread(target=display_messages)
     display_thread.start()
 
+    # Create separate threads for balance checking behavior
+    balance_thread_1 = threading.Thread(
+        target=check_erc20_balance, args=(agent1,))
+    balance_thread_2 = threading.Thread(
+        target=check_erc20_balance, args=(agent2,))
+    balance_thread_1.start()
+    balance_thread_2.start()
+
+    # Register signal handler for SIGINT (Ctrl+C)
+    signal.signal(signal.SIGINT, signal_handler)
+
+    # Keep the main thread alive until exit signal
+    while not exit_flag:
+        time.sleep(1)
+
+    # Signal the agent threads to stop
+    agent1.stop()
+    agent2.stop()
+
+    # Wait for the threads to finish
     thread1.join()
     thread2.join()
     display_thread.join()
+    balance_thread_1.join()
+    balance_thread_2.join()
+
+    print("Exiting gracefully...")
