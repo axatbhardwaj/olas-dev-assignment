@@ -46,8 +46,8 @@ The project follows a modular design:
 
 ## Testing
 
-- Unit tests: `python -m unittest tests/test_agent.py`
-- Integration tests: `python -m unittest tests/test_integration.py`
+- Unit tests: `python -m unittest discover -s tests -p "unit_tests.py"`
+- Integration tests: `python -m unittest discover -s tests -p intergration_tests.py`
 
 ## Notes
 
