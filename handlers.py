@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import sys
 from dotenv import load_dotenv
 from eth_account import Account
 from my_eth_utils import (
@@ -12,7 +13,9 @@ from my_eth_utils import (
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    stream=sys.stdout,
 )
 
 load_dotenv()
@@ -32,14 +35,14 @@ def handle_hello_message(message: str, private_key: str):
 def handle_crypto_message(message: str, private_key: str):
     logging.info(f"Received 'crypto' message: {message}")
     w3 = get_web3_provider(tenderly_fork_url)
-    contract_address = "0xdac17f958d2ee523a2206206994597c13d831ec7"
+    contract_address = os.getenv("contract_address")
     contract = get_erc20_contract(w3, contract_abi, contract_address)
 
     # Derive the source address from the private key
     account = Account.from_key(private_key)
     source_address = account.address
 
-    target_address = "0x4F6e47A7a7e557C57D887e0C6D71Ae73F5bAE73B"
+    target_address = os.getenv("reciver_address")
 
     balance = check_balance(w3, contract, source_address)
 

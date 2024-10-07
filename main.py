@@ -5,6 +5,7 @@ import threading
 import dotenv
 import os
 import logging
+from queue import Queue
 
 dotenv.load_dotenv()
 
@@ -17,8 +18,11 @@ if __name__ == "__main__":
         logging.error("Private keys are not set in the environment variables.")
         exit(1)
 
-    agent1 = Agent(private_key=private_key_1)
-    agent2 = Agent(private_key=private_key_2)
+    # Create a shared queue for messages
+    message_queue = Queue()
+
+    agent1 = Agent(private_key=private_key_1, message_queue=message_queue)
+    agent2 = Agent(private_key=private_key_2, message_queue=message_queue)
 
     # Correctly register handlers with "hello" and "crypto" keys
     # Changed from "str" to "hello"
@@ -45,5 +49,16 @@ if __name__ == "__main__":
     thread1.start()
     thread2.start()
 
+    # Function to display messages from the queue in stdout
+    def display_messages():
+        while True:
+            message = message_queue.get()
+            print(f"Received message: {message}")
+
+    # Start a thread to display messages
+    display_thread = threading.Thread(target=display_messages)
+    display_thread.start()
+
     thread1.join()
     thread2.join()
+    display_thread.join()

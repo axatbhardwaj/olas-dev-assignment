@@ -13,11 +13,10 @@ logging.basicConfig(
 
 
 class Agent:
-
-    def __init__(self, private_key: str):
+    def __init__(self, private_key: str, message_queue: Queue):
         self.id = uuid.uuid4()  # Unique ID for the agent
         self.InBox: Queue = Queue()
-        self.OutBox: Queue = Queue()
+        self.OutBox: Queue = message_queue  # Shared queue for output
         self.handlers: dict = {}
         self.behaviors: List[Callable] = []
         self.private_key = private_key
