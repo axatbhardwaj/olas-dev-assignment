@@ -1,3 +1,5 @@
+### Update `README.md`:
+
 # olas-dev-assignment
 
 ## Overview
@@ -16,7 +18,7 @@ This project implements an autonomous agent in Python that interacts with the Et
 1. **Clone the Repository**:
 
    ```bash
-   git clone
+   git clone https://github.com/axatbhardwaj/olas-dev-assignment.git
    cd olas-dev-assignment
    ```
 
@@ -27,7 +29,9 @@ This project implements an autonomous agent in Python that interacts with the Et
    ```
 
 3. **Configuration**:
-   - Update the `rpc_url`, `token_address`, `address_1`, `address_2`, and `pvt_key_1` in the code with your actual Ethereum details.
+   - Update the `rpc_url`, `token_address`, `address_1`, `address_2`, and `pvt_key_1` in the `settings.py` file with your actual Ethereum details.
+   - The `settings.py` file is used for configuring the project settings.
+   - The `abi.py` file is present in the `common` directory and contains the ERC-20 Token ABI.
    - Optionally, set up a dedicated [Tenderly](https://tenderly.co/) fork for safe testing.
 
 ## Usage
@@ -57,3 +61,7 @@ python -m unittest
 
 - [Tenderly](https://tenderly.co/) for providing a platform to test and debug Ethereum smart contracts.
 - [web3.py](https://web3py.readthedocs.io/en/stable/) for simplifying Ethereum interactions in Python.
+
+```
+
+```
