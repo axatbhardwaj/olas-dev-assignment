@@ -61,7 +61,3 @@ python -m unittest
 
 - [Tenderly](https://tenderly.co/) for providing a platform to test and debug Ethereum smart contracts.
 - [web3.py](https://web3py.readthedocs.io/en/stable/) for simplifying Ethereum interactions in Python.
-
-```
-
-```
