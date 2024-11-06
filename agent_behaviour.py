@@ -4,7 +4,7 @@ import random
 
 from agent import Agent
 
-from abi import ERC20_ABI
+from common.abi import ERC20_ABI
 from settings import ETH_SETTINGS
 from settings import ACCEPTED_TYPES, MESSAGE_WORDS
 
@@ -32,6 +32,8 @@ class ConcreteAgent(Agent):
 
     # "crypto" keyword & transfer ERC20 handler
     def handle_crypto(self, message_content):
+        print(f"Filtered message (crypto): {message_content['content']}")
+        print("Transferring ERC-20 token...")
         self.transfer_token()
 
     # "random message generator" behaviour
