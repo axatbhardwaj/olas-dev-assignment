@@ -1,8 +1,7 @@
-
 import time
 from queue import Queue
 from threading import Thread
-from agent_behaviour import ConcreteAgent
+from src.agent_behaviour import ConcreteAgent
 
 
 def setUpTask():
@@ -38,5 +37,5 @@ def setUpTask():
         time.sleep(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     setUpTask()

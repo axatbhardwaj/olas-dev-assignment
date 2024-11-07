@@ -22,13 +22,20 @@ This project implements an autonomous agent in Python that interacts with the Et
    cd olas-dev-assignment
    ```
 
-2. **Install Dependencies**:
+2. **Create Virtual Environment**:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Configuration**:
+4. **Configuration**:
    - Update the `rpc_url`, `token_address`, `address_1`, `address_2`, and `pvt_key_1` in the `settings.py` file with your actual Ethereum details.
    - The `settings.py` file is used for configuring the project settings.
    - The `abi.py` file is present in the `common` directory and contains the ERC-20 Token ABI.
@@ -39,9 +46,9 @@ This project implements an autonomous agent in Python that interacts with the Et
 1. **Run the Agent**:
    Execute the script to start the agent instances. They will begin communicating with each other and interacting with the Ethereum blockchain.
 
-   ```bash
-   python main.py
-   ```
+```bash
+python -m src.main
+```
 
 2. **Monitor Output**:
    The agents will print their activities to stdout, including generated messages, token balance checks, and transfer confirmations.
