@@ -39,7 +39,7 @@ class ConcreteAgent(Agent):
         self.transfer_token()
 
     # "random message generator" behaviour
-    
+
     async def generate_random_message(self):
         while True:
             message_content = (
@@ -51,7 +51,9 @@ class ConcreteAgent(Agent):
                     type = ACCEPTED_TYPES[i]
                     break
             self.emit_message({"type": type, "content": message_content})
-            print(f"Generated message:|| {message_content} || at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print(
+                f"Generated message:|| {message_content} || at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
             # Generates random 2-word messages every 2 seconds.
             await asyncio.sleep(2)
 
@@ -61,7 +63,9 @@ class ConcreteAgent(Agent):
             balance = self.token_contract.functions.balanceOf(
                 self.w3.to_checksum_address(ETH_SETTINGS["address_1"])
             ).call()
-            print(f"ERC-20 Token Balance: {self.w3.from_wei(balance, 'ether')} tokens at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print(
+                f"ERC-20 Token Balance: {self.w3.from_wei(balance, 'ether')} tokens at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
             # Checks the ERC-20 token balance of an ethereum address every 10 seconds
             await asyncio.sleep(10)
 
